@@ -1,0 +1,155 @@
+/* Базовые настройки сброса */
+* {
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #0d0d0d;
+    color: #e5e5e5;
+    height: 100vh;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+}
+
+/* --- Сайдбар (Боковое меню) --- */
+.sidebar {
+    width: 340px;
+    background-color: #121212;
+    border-right: 1px solid #1f1f1f;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-brand {
+    padding: 35px 30px;
+    border-bottom: 1px solid #1f1f1f;
+}
+
+.sidebar-brand h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #ffffff;
+}
+
+.nav-menu {
+    list-style: none;
+    overflow-y: auto;
+    padding: 15px 0;
+    flex-grow: 1;
+}
+
+/* Стилизация полосы прокрутки для меню */
+.nav-menu::-webkit-scrollbar {
+    width: 4px;
+}
+.nav-menu::-webkit-scrollbar-thumb {
+    background-color: #262626;
+    border-radius: 2px;
+}
+
+.nav-item {
+    padding: 14px 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.nav-item:hover {
+    background-color: #181818;
+}
+
+.nav-item.active {
+    background-color: #1a1a1a;
+    position: relative;
+}
+
+/* Аккуратный индикатор активного пункта слева */
+.nav-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background-color: #c5a880; /* Благородный золотистый акцент */
+}
+
+.nav-index {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #666666;
+    margin-right: 20px;
+    width: 20px;
+}
+
+.nav-text {
+    font-size: 0.95rem;
+    color: #999999;
+    font-weight: 500;
+}
+
+.nav-item:hover .nav-text, 
+.nav-item.active .nav-text {
+    color: #ffffff;
+}
+
+/* --- Главная область чтения --- */
+.content-area {
+    flex: 1;
+    background-color: #0d0d0d;
+    overflow-y: auto;
+    padding: 60px;
+    display: flex;
+    justify-content: center;
+}
+
+.document-card {
+    max-width: 840px;
+    width: 100%;
+    height: fit-content;
+    padding-bottom: 100px; /* Отступ снизу для комфортного чтения */
+}
+
+#manual-title {
+    font-family: 'Lora', serif; /* Элегантный текстовый шрифт для заголовков */
+    font-size: 2.4rem;
+    font-weight: 500;
+    color: #ffffff;
+    line-height: 1.3;
+    margin-bottom: 25px;
+}
+
+.meta-line {
+    height: 1px;
+    background-color: #1f1f1f;
+    width: 100%;
+    margin-bottom: 35px;
+}
+
+/* Основной текст документа */
+.document-body {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: #b3b3b3;
+    letter-spacing: -0.1px;
+}
+
+/* Если в контенте встречаются списки, выделения или ссылки */
+.document-body strong {
+    color: #ffffff;
+    font-weight: 600;
+}

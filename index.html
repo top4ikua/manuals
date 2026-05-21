@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Документация и Материалы</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <h2>Материалы</h2>
+            </div>
+            <ul id="menu" class="nav-menu">
+                </ul>
+        </aside>
+
+        <main class="content-area">
+            <article class="document-card">
+                <h1 id="manual-title">Информационная панель</h1>
+                <div class="meta-line"></div>
+                <div id="manual-text" class="document-body">
+                    Пожалуйста, выберите интересующий вас раздел в левом меню для отображения подробной информации.
+                </div>
+            </article>
+        </main>
+    </div>
+
+    <script>
+        // Подгружаем базу данных мануалов
+        fetch('manuals.json')
+            .then(response => response.json())
+            .then(data => {
+                const menu = document.getElementById('menu');
+                
+                for (const key in data) {
+                    const li = document.createElement('li');
+                    li.className = 'nav-item';
+                    
+                    // Форматируем вывод: аккуратный индекс и название
+                    li.innerHTML = `<span class="nav-index">${key.padStart(2, '0')}</span><span class="nav-text">${data[key].title}</span>`;
+                    
+                    li.onclick = () => {
+                        showManual(data[key]);
+                        // Переключение активного класса
+                        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                        li.classList.add('active');
+                    };
+                    menu.appendChild(li);
+                }
+            })
+            .catch(error => {
+                document.getElementById('manual-text').innerHTML = "<span style='color: #cf6679;'>Ошибка загрузки базы данных (manuals.json). Запустите проект через локальный сервер.</span>";
+            });
+
+        function showManual(manual) {
+            document.getElementById('manual-title').textContent = manual.title;
+            // Переносы строк превращаем в HTML-теги для правильного отображения
+            const formattedText = manual.content.replace(/\n/g, '<br>');
+            document.getElementById('manual-text').innerHTML = formattedText;
+        }
+    </script>
+</body>
+</html>

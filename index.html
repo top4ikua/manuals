@@ -6,13 +6,17 @@
     <title>Документация и Материалы</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
     <div class="container">
         <aside class="sidebar">
             <div class="sidebar-brand">
-                <h2>Материалы</h2>
+                <h2>МАТЕРИАЛЫ</h2>
+                <div class="sidebar-toggle" id="toggle-btn">
+                    <i class="fas fa-chevron-left" id="toggle-icon"></i>
+                </div>
             </div>
             <ul id="menu" class="nav-menu">
                 </ul>
@@ -30,7 +34,7 @@
     </div>
 
     <script>
-        // Подгружаем базу данных мануалов
+        // --- 1. Логика загрузки меню ---
         fetch('manuals.json')
             .then(response => response.json())
             .then(data => {
@@ -62,6 +66,25 @@
             const formattedText = manual.content.replace(/\n/g, '<br>');
             document.getElementById('manual-text').innerHTML = formattedText;
         }
+
+        // --- 2. Логика сворачивания боковой панели ---
+        const toggleBtn = document.getElementById('toggle-btn');
+        const toggleIcon = document.getElementById('toggle-icon');
+        const container = document.querySelector('.container');
+
+        toggleBtn.addEventListener('click', () => {
+            // Переключаем класс .collapsed у главного контейнера
+            container.classList.toggle('collapsed');
+            
+            // Переключение иконок стрелок (влево <-> вправо)
+            if (container.classList.contains('collapsed')) {
+                toggleIcon.classList.remove('fa-chevron-left');
+                toggleIcon.classList.add('fa-chevron-right');
+            } else {
+                toggleIcon.classList.remove('fa-chevron-right');
+                toggleIcon.classList.add('fa-chevron-left');
+            }
+        });
     </script>
 </body>
 </html>

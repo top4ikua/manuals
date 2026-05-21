@@ -28,11 +28,27 @@ body {
     border-right: 1px solid #1f1f1f;
     display: flex;
     flex-direction: column;
+    transition: width 0.3s ease; /* Плавное сворачивание */
+    overflow-x: hidden; /* Скрыть текст при сужении */
+}
+
+/* Свернутое состояние панели */
+.container.collapsed .sidebar {
+    width: 60px; /* Оставляем место только для кнопки */
 }
 
 .sidebar-brand {
     padding: 35px 30px;
     border-bottom: 1px solid #1f1f1f;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* Кнопка переключения справа */
+    position: relative; /* Для позиционирования кнопки */
+}
+
+/* Настройки отступов для свернутого состояния */
+.container.collapsed .sidebar-brand {
+    padding: 35px 15px; /* Уменьшить отступы */
 }
 
 .sidebar-brand h2 {
@@ -41,6 +57,31 @@ body {
     text-transform: uppercase;
     letter-spacing: 2px;
     color: #ffffff;
+    margin: 0 auto 0 0; /* Прижать заголовок влево */
+    padding: 0 15px 0 0; /* Отступ от кнопки */
+    transition: opacity 0.3s ease, visibility 0.3s ease; /* Плавное скрытие */
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Скрыть заголовок при сворачивании */
+.container.collapsed .sidebar-brand h2 {
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* Кнопка переключения */
+.sidebar-toggle {
+    cursor: pointer;
+    color: #666666;
+    transition: color 0.2s ease;
+    font-size: 1.2rem;
+    position: absolute;
+    right: 15px; /* Фиксированное положение */
+}
+
+.sidebar-toggle:hover {
+    color: #ffffff;
 }
 
 .nav-menu {
@@ -48,6 +89,16 @@ body {
     overflow-y: auto;
     padding: 15px 0;
     flex-grow: 1;
+    transition: opacity 0.3s ease, visibility 0.3s ease; /* Плавное скрытие текста */
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Скрыть текст меню при сворачивании */
+.container.collapsed .nav-menu {
+    opacity: 0;
+    visibility: hidden;
+    overflow: hidden; /* Скрыть горизонтальную прокрутку */
 }
 
 /* Стилизация полосы прокрутки для меню */
@@ -114,6 +165,12 @@ body {
     padding: 60px;
     display: flex;
     justify-content: center;
+    transition: padding 0.3s ease; /* Плавное изменение отступов при сворачивании панели */
+}
+
+/* Настройки отступов для свернутого состояния панели */
+.container.collapsed .content-area {
+    padding: 60px 40px; /* Уменьшить отступы */
 }
 
 .document-card {

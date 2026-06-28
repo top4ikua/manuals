@@ -57,6 +57,7 @@
                 }
             })
             .catch(error => {
+                console.error("НАСТОЯЩАЯ ОШИБКА:", error); // <-- Добавлена эта строка
                 document.getElementById('manual-text').innerHTML = "<span style='color: #cf6679;'>Ошибка загрузки базы данных (manuals.json). Запустите проект через локальный сервер.</span>";
             });
 

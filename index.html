@@ -7,10 +7,172 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Стили экрана авторизации */
+        #auth-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #121212;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            color: white;
+            font-family: 'Inter', sans-serif;
+        }
+        #auth-screen input {
+            padding: 10px 15px;
+            font-size: 16px;
+            border: 1px solid #333;
+            border-radius: 5px;
+            background: #1e1e1e;
+            color: #fff;
+            margin-bottom: 15px;
+            width: 250px;
+            text-align: center;
+        }
+        #auth-screen button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #bb86fc;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+        #auth-screen button:hover {
+            background-color: #a370df;
+        }
+        #auth-error {
+            color: #cf6679;
+            margin-top: 10px;
+            font-size: 14px;
+            display: none;
+            text-align: center;
+            max-width: 300px;
+        }
+
+        /* Скрываем основной контент до успешного входа */
+        #main-app {
+            display: none; 
+        }
+
+        /* Настройка боковой панели для размещения кнопки выхода внизу */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            height: 100vh; /* Убедитесь, что панель занимает всю высоту */
+        }
+        .nav-menu {
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        /* Кнопка выхода */
+        .logout-btn {
+            padding: 15px;
+            background-color: #cf6679;
+            color: #fff;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            border-top: 1px solid #333;
+            transition: background 0.3s;
+            margin-top: auto; /* Прижимает кнопку к низу */
+        }
+        .logout-btn:hover {
+            background-color: #b35565;
+        }
+        .logout-btn i {
+            margin-right: 8px;
+        }
+
+        /* Модальное окно подтверждения выхода */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            font-family: 'Inter', sans-serif;
+        }
+        .modal-box {
+            background: #1e1e1e;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            max-width: 400px;
+            color: white;
+            border: 1px solid #333;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .modal-box h3 {
+            margin-top: 0;
+            color: #cf6679;
+            font-size: 20px;
+        }
+        .modal-box p {
+            margin-bottom: 25px;
+            line-height: 1.5;
+            font-size: 15px;
+            color: #ccc;
+        }
+        .modal-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+        }
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .btn-cancel {
+            background: #333;
+            color: white;
+        }
+        .btn-cancel:hover {
+            background: #444;
+        }
+        .btn-confirm {
+            background: #cf6679;
+            color: white;
+        }
+        .btn-confirm:hover {
+            background: #b35565;
+        }
+    </style>
 </head>
 <body>
 
-    <div class="container">
+    <div id="auth-screen">
+        <h2>Введите ключ доступа</h2>
+        <input type="text" id="access-key-input" placeholder="xxxx-xxxx-xxxx" autocomplete="off">
+        <button onclick="checkAccessKey()">Войти</button>
+        <div id="auth-error"></div>
+    </div>
+
+    <div class="modal-overlay" id="logout-modal">
+        <div class="modal-box">
+            <h3>Подтверждение выхода</h3>
+            <p>Вы уверены, что хотите выйти? Вы безвозвратно потеряете доступ к сайту на этом устройстве. Это действие нельзя отменить без ввода нового ключа.</p>
+            <div class="modal-buttons">
+                <button class="modal-btn btn-cancel" onclick="hideLogoutModal()">Отмена</button>
+                <button class="modal-btn btn-confirm" onclick="confirmLogout()">Выйти навсегда</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="main-app">
         <aside class="sidebar">
             <div class="sidebar-brand">
                 <h2>МАТЕРИАЛЫ</h2>
@@ -18,8 +180,13 @@
                     <i class="fas fa-chevron-left" id="toggle-icon"></i>
                 </div>
             </div>
+            
             <ul id="menu" class="nav-menu">
                 </ul>
+
+            <div class="logout-btn" onclick="showLogoutModal()">
+                <i class="fas fa-sign-out-alt"></i> Выйти
+            </div>
         </aside>
 
         <main class="content-area">
@@ -34,50 +201,118 @@
     </div>
 
     <script>
-        // --- 1. Логика загрузки меню ---
-        fetch('manuals.json')
-            .then(response => response.json())
-            .then(data => {
-                const menu = document.getElementById('menu');
+        // --- 1. Логика строгой авторизации (через сервер) ---
+        async function checkAccessKey() {
+            const inputKey = document.getElementById('access-key-input').value.trim();
+            const savedToken = localStorage.getItem('device_token') || "";
+            const errorDiv = document.getElementById('auth-error');
+
+            if (!inputKey) {
+                errorDiv.textContent = "Пожалуйста, введите ключ.";
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            try {
+                // Запрос к серверной функции на Vercel (api/auth.js)
+                const response = await fetch('/api/auth', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ key: inputKey, deviceToken: savedToken })
+                });
                 
-                for (const key in data) {
-                    const li = document.createElement('li');
-                    li.className = 'nav-item';
+                const result = await response.json();
+
+                if (result.success) {
+                    // Сохраняем токен (если это первая активация) и ключ
+                    if (result.token) {
+                        localStorage.setItem('device_token', result.token);
+                    }
+                    localStorage.setItem('site_access_key', inputKey);
                     
-                    // Форматируем вывод: аккуратный индекс и название
-                    li.innerHTML = `<span class="nav-index">${key.padStart(2, '0')}</span><span class="nav-text">${data[key].title}</span>`;
+                    errorDiv.style.display = 'none';
+                    document.getElementById('auth-screen').style.display = 'none';
+                    document.getElementById('main-app').style.display = 'flex';
                     
-                    li.onclick = () => {
-                        showManual(data[key]);
-                        // Переключение активного класса
-                        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-                        li.classList.add('active');
-                    };
-                    menu.appendChild(li);
+                    loadManuals(); 
+                } else {
+                    errorDiv.textContent = result.error || "Неверный ключ.";
+                    errorDiv.style.display = 'block';
                 }
-            })
-            .catch(error => {
-                console.error("НАСТОЯЩАЯ ОШИБКА:", error); // <-- Добавлена эта строка
-                document.getElementById('manual-text').innerHTML = "<span style='color: #cf6679;'>Ошибка загрузки базы данных (manuals.json). Запустите проект через локальный сервер.</span>";
-            });
+            } catch (error) {
+                errorDiv.textContent = "Ошибка связи с сервером.";
+                errorDiv.style.display = 'block';
+            }
+        }
+
+        // Автоматическая проверка при обновлении страницы
+        async function verifyAuth() {
+            const savedKey = localStorage.getItem('site_access_key');
+            if (savedKey) {
+                document.getElementById('access-key-input').value = savedKey;
+                await checkAccessKey(); 
+            }
+        }
+
+        verifyAuth();
+
+        // --- 2. Логика выхода (Сброс ключа) ---
+        function showLogoutModal() {
+            document.getElementById('logout-modal').style.display = 'flex';
+        }
+
+        function hideLogoutModal() {
+            document.getElementById('logout-modal').style.display = 'none';
+        }
+
+        function confirmLogout() {
+            // Удаляем ключ и токен устройства из памяти браузера
+            localStorage.removeItem('site_access_key');
+            localStorage.removeItem('device_token');
+            // Перезагружаем страницу для возврата на экран авторизации
+            window.location.reload();
+        }
+
+        // --- 3. Логика загрузки контента (JSON) ---
+        function loadManuals() {
+            fetch('manuals.json')
+                .then(response => response.json())
+                .then(data => {
+                    const menu = document.getElementById('menu');
+                    menu.innerHTML = ''; 
+                    
+                    for (const key in data) {
+                        const li = document.createElement('li');
+                        li.className = 'nav-item';
+                        li.innerHTML = `<span class="nav-index">${key.padStart(2, '0')}</span><span class="nav-text">${data[key].title}</span>`;
+                        
+                        li.onclick = () => {
+                            showManual(data[key]);
+                            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                            li.classList.add('active');
+                        };
+                        menu.appendChild(li);
+                    }
+                })
+                .catch(error => {
+                    console.error("ОШИБКА ЗАГРУЗКИ JSON:", error);
+                    document.getElementById('manual-text').innerHTML = "<span style='color: #cf6679;'>Ошибка загрузки базы данных (manuals.json). Проверьте синтаксис файла.</span>";
+                });
+        }
 
         function showManual(manual) {
             document.getElementById('manual-title').textContent = manual.title;
-            // Переносы строк превращаем в HTML-теги для правильного отображения
             const formattedText = manual.content.replace(/\n/g, '<br>');
             document.getElementById('manual-text').innerHTML = formattedText;
         }
 
-        // --- 2. Логика сворачивания боковой панели ---
+        // --- 4. Логика интерфейса (Сворачивание панели) ---
         const toggleBtn = document.getElementById('toggle-btn');
         const toggleIcon = document.getElementById('toggle-icon');
         const container = document.querySelector('.container');
 
         toggleBtn.addEventListener('click', () => {
-            // Переключаем класс .collapsed у главного контейнера
             container.classList.toggle('collapsed');
-            
-            // Переключение иконок стрелок (влево <-> вправо)
             if (container.classList.contains('collapsed')) {
                 toggleIcon.classList.remove('fa-chevron-left');
                 toggleIcon.classList.add('fa-chevron-right');

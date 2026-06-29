@@ -6,15 +6,9 @@ export default async function handler(req, res) {
     }
 
     const { key, deviceToken } = req.body;
-    const ADMIN_KEY = "semenmanual67521488";
-
-    // 1. Админ-ключ работает всегда и везде
-    if (key === ADMIN_KEY) {
-        return res.status(200).json({ success: true });
-    }
 
     try {
-        // 2. Ищем ключ в базе данных
+        // Ищем ключ в базе данных
         const claimedBy = await kv.get(`auth:${key}`);
 
         // Ключа нет в базе
@@ -22,7 +16,13 @@ export default async function handler(req, res) {
             return res.status(401).json({ error: "Неверный ключ доступа" });
         }
 
-        // 3. Ключ никем не занят (пустое значение)
+        // Обработка ключа администратора (работает всегда и везде)
+        if (claimedBy === "admin") {
+            return res.status(200).json({ success: true, type: "admin" });
+        }
+
+        // Обработка обычного ключа
+        // Ключ никем не занят (пустое значение)
         if (claimedBy === "") {
             // Генерируем уникальный токен для этого устройства
             const newToken = crypto.randomUUID(); 
@@ -32,7 +32,7 @@ export default async function handler(req, res) {
             return res.status(200).json({ success: true, token: newToken });
         }
 
-        // 4. Ключ уже был использован. Проверяем, совпадает ли токен устройства.
+        // Ключ уже был использован. Проверяем, совпадает ли токен устройства.
         if (claimedBy === deviceToken) {
             return res.status(200).json({ success: true }); // Это владелец ключа
         } else {

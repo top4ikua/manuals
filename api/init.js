@@ -1,67 +1,280 @@
-function generateKeys() {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let keys = [];
-    // Нам нужно 251 уникальный ключ
-    while(keys.length < 251) {
-        let key = '';
-        for(let j=0; j<3; j++) {
-            for(let k=0; k<4; k++) {
-                key += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            if(j<2) key += '-';
-        }
-        // Проверяем на уникальность (чтобы случайно не сгенерировать два одинаковых)
-        if (!keys.includes(key)) {
-            keys.push(key);
-        }
-    }
-
-    // Первый ключ делаем админским
-    const adminKey = keys[0];
-    const userKeys = keys.slice(1);
-
-    // Формируем готовый код для файла init.js
-    let code = `import { kv } from '@vercel/kv';
+import { kv } from '@vercel/kv';
 
 export default async function handler(req, res) {
-    // ВАЖНО: Обязательно сохраните этот админ-ключ в надежном месте!
-    const ADMIN_KEY = "${adminKey}";
+    // ВАЖНО: Вставьте сюда ваш сгенерированный админ-ключ!
+    const ADMIN_KEY = "5yBS-Emf2-pveQ";
     
-    // Защита скрипта инициализации
+    // Защита скрипта инициализации (чтобы никто чужой не сбросил базу)
     if (req.query.pw !== ADMIN_KEY) {
         return res.status(401).send("Доступ запрещен");
     }
 
+    // Вставьте сюда ваши 250 пользовательских ключей
     const userKeys = [
-`;
-    // Добавляем все пользовательские ключи в массив
-    userKeys.forEach((key, index) => {
-        code += `        "${key}"${index < userKeys.length - 1 ? ',' : ''}\n`;
-    });
-
-    code += `    ];
+        "9EOq-LZMW-N4kA",
+        "LwZs-8X0k-zxoI",
+        "HHyg-rH0o-LTe0",
+        "Srr2-Y6iD-eX7r",
+        "v7qU-ySGc-8bwf",
+        "qUpF-lrRK-E6SN",
+        "2M8U-SCb1-qgAc",
+        "7rDX-VOv9-bsVu",
+        "UeNn-xKII-bCOI",
+        "Lg15-qvhe-c0vH",
+        "ppj9-Fw19-h04T",
+        "WkXW-cT0s-XR1R",
+        "WqQ5-NZQF-uaM7",
+        "B00W-OqQ9-vTYs",
+        "lk0U-vwqo-JhHf",
+        "MuET-H6eH-HNq3",
+        "DoWL-30Wo-kt80",
+        "Vj99-hPsN-UBxu",
+        "UHdF-0wvk-aWxL",
+        "i9C7-BI64-9gOb",
+        "sSXX-1l1n-kZHz",
+        "0LyZ-Ay6Y-R02W",
+        "0wPk-xMNQ-YVkQ",
+        "kRbW-iBBF-BCLU",
+        "paGT-Tjju-guFF",
+        "47ZK-dVCT-p4dr",
+        "Pbwy-xp5B-6r8p",
+        "5aqV-fvlL-TcJD",
+        "RKM0-K7oM-KA4D",
+        "BcRD-LJB7-2quK",
+        "gKCO-w7GY-4Uvl",
+        "yJCP-GaI7-uhBS",
+        "UXBt-S9CQ-WR3Z",
+        "swOf-5yJe-zYWr",
+        "XNjo-N1sv-Oy3N",
+        "fnrO-RPk2-2F1P",
+        "lvUF-bwlJ-ZKZX",
+        "XGzy-sVlR-uw6F",
+        "q358-K68z-VzpW",
+        "aTAB-kcy6-jamS",
+        "AaKy-KkbY-1t2Z",
+        "yWPe-NhxR-8HaW",
+        "urbf-ZhMQ-kGFH",
+        "DJPf-TVVY-XCQS",
+        "yPs6-I4Ef-wzYz",
+        "LMmO-JGSS-hHaM",
+        "BUQB-6zA3-r7rL",
+        "mLHt-gvQO-2wnE",
+        "kTXY-ty5l-0gTA",
+        "IZAa-CGA4-f2Q5",
+        "WwXb-MVDc-O8QL",
+        "i1eK-omQB-nfk3",
+        "siQj-BRM4-IQwr",
+        "LKSb-1SGk-EAAI",
+        "dU71-319a-VgpY",
+        "lc6b-hFDu-beQ9",
+        "TwAb-84tW-hAaj",
+        "ZRrJ-5KXx-EoFk",
+        "eTSc-hlLs-kBBF",
+        "V1iS-RtE0-xRs7",
+        "YzSx-eGJr-Q5JI",
+        "VBXd-wb5L-07NV",
+        "kzRu-WmDZ-Ug8A",
+        "gT3a-w3GG-gwdJ",
+        "jQpA-l2yL-b4Pc",
+        "xy5e-LSPi-usPZ",
+        "upqn-rp3T-hy5f",
+        "LecR-fTEW-LjLd",
+        "IgeB-nB10-hpEF",
+        "kypd-8JCS-RPv7",
+        "K861-zDUN-b6Rt",
+        "Y8dJ-gxOA-htnv",
+        "yuSo-2qdk-t148",
+        "loNg-g8sq-7ZjS",
+        "fEHN-8Hzr-nQw0",
+        "wYo1-wrL8-6Sqa",
+        "yIbs-4vKE-4UpS",
+        "qCL3-mOoi-iHzS",
+        "B5Yg-ZzKL-8DK3",
+        "B5ZO-i2Pe-jUx8",
+        "bLnq-Xyjw-J9YF",
+        "iGuy-UD55-U4SL",
+        "LqdD-7vZa-Gn37",
+        "ezvB-wZuv-anue",
+        "ISdP-3XRx-dHxD",
+        "x6wn-uTeE-nITI",
+        "prg5-Dcb2-bi4a",
+        "lYca-YTyE-ZHdW",
+        "WoLh-goj0-jGRg",
+        "3O7X-xoO5-O842",
+        "m87C-xgEz-UhvT",
+        "G7lO-L9bR-dbdi",
+        "FXA7-SKnF-DKGq",
+        "253c-QbwO-kjpw",
+        "XsMx-Yo0v-opao",
+        "gtje-GisX-FZMt",
+        "IJN8-uAfn-lBlz",
+        "BuDO-wKOU-dHvm",
+        "wC0o-V6rs-noyR",
+        "SRFB-Idfu-IXRt",
+        "TTEQ-dUS8-j6dl",
+        "TDi6-u0wq-Yk09",
+        "y4l4-iYbL-BFPZ",
+        "3GnY-xTay-O5h0",
+        "3I4C-Iohb-P6vu",
+        "NceO-d83Z-8OOZ",
+        "bRNU-hok3-meru",
+        "9f3e-JyLD-DAKQ",
+        "X86D-klIx-DzUW",
+        "Iy4E-FYzp-2RZl",
+        "sUGn-e2Vq-lFHF",
+        "w7Qx-H9xD-slQ5",
+        "kszG-KDTN-iJ0p",
+        "PgiA-eEbR-Phof",
+        "S6qh-bifY-JsYc",
+        "qFZs-UeSW-ftAx",
+        "78qC-8HGK-r24N",
+        "U02C-AfJb-fDnq",
+        "gvug-VJut-x4Mr",
+        "pLkE-sjsL-uuSN",
+        "hbph-Rbsj-k02x",
+        "merk-nzgD-GoD3",
+        "HX4X-rrUy-mfF3",
+        "ydC7-rswp-JEGn",
+        "r6Nk-Fjxu-pCIg",
+        "j3Ny-ZETK-vyLe",
+        "zkzA-RPu4-sdKZ",
+        "GX0n-D8Ho-4ffF",
+        "Di9A-KZl8-pw4H",
+        "ZLXD-Eu5c-i6CV",
+        "w14Y-YCw6-i8vi",
+        "pt9U-w67D-ml2e",
+        "JhOt-I2MG-rYSq",
+        "1xnB-e5z6-bVgW",
+        "v2ob-VN3S-xBrK",
+        "HAfT-Np9m-HTeZ",
+        "wy0n-V51u-SFHd",
+        "QGuV-kPEu-pS4h",
+        "fh7B-bTBA-75Ts",
+        "z2T7-ZmxH-qT47",
+        "EpuF-iNJy-wWLI",
+        "MGam-0CsO-4PoC",
+        "Tjij-HuzN-EttB",
+        "P2zm-kQqb-Rn7a",
+        "TOse-jGLa-Pivh",
+        "pNjC-jEHg-muPy",
+        "Zznq-6w9Y-OqtQ",
+        "GLPO-fVLk-HZLY",
+        "Q5M4-4aVr-foWo",
+        "eQxF-PBpu-ywir",
+        "Ikgu-5eEV-9Bxn",
+        "ezeZ-0yQk-xJQO",
+        "kepn-xjku-0rC8",
+        "p6aP-jtw2-p49a",
+        "opDl-kKav-yvzp",
+        "Ch3a-Z2Nn-DzgW",
+        "dyZc-X32c-SiMR",
+        "wc9a-Nxqd-c9Pa",
+        "PiIG-PA5m-hvBH",
+        "zmkI-TYCG-SI9h",
+        "bBaF-2MRb-owaN",
+        "AnXp-xgTh-ADsJ",
+        "AQfI-juKS-dFne",
+        "YEbB-Qxcm-TuUh",
+        "2F2v-Wqxv-FL5V",
+        "y93a-tyoq-liBW",
+        "qoZR-Wa4b-VjF0",
+        "Gz9A-XlpS-Icd3",
+        "nuI6-W7fz-Qqju",
+        "tIaE-t6fq-Fg1z",
+        "5ead-QUzk-WTbe",
+        "vE1n-Px3Q-X64G",
+        "EVfp-vryY-1akV",
+        "9vCr-8reK-keSC",
+        "LGnv-OR0q-yglJ",
+        "cOjC-eL3L-FuCp",
+        "EGE7-6pp4-Regq",
+        "0caB-y71Y-i3ys",
+        "Afbo-wka1-iqmC",
+        "H411-Q9iP-0OMH",
+        "AnSz-AVC9-LtzU",
+        "nUmR-ZF9L-vsSE",
+        "CgTm-6bKr-IF9D",
+        "u3y3-HHk0-ZXCg",
+        "sKep-AjFd-yBDA",
+        "q7Ml-nitm-VziU",
+        "TDWw-SNMz-FQAE",
+        "GgE4-isJ6-SFRo",
+        "YG25-DvTC-25wb",
+        "9cbX-tVmW-AJbR",
+        "EtnW-jUaB-dPgS",
+        "Q3pj-8QD8-AGED",
+        "uVd8-el5D-dDIx",
+        "aFE9-7I7R-oIcN",
+        "vaPH-pJTa-ha7V",
+        "REAT-d0ez-TajA",
+        "p7tn-i7fy-gleG",
+        "xHHW-gy3L-fli8",
+        "yjs4-jUnB-Ln2I",
+        "z5Gj-ZMME-mvuQ",
+        "EdQx-oa4E-u0nV",
+        "oNes-KEi5-nZi6",
+        "6ZpO-sAGH-v3Qg",
+        "RdgH-tDbn-YSHv",
+        "R7d6-macG-5T4L",
+        "UaEd-xwrk-Njil",
+        "Xo51-x6rV-6ZpY",
+        "qHf4-jRQI-XylM",
+        "4hsy-6YrT-t23C",
+        "gx3e-6lB5-O1nj",
+        "U43b-UOeZ-CBfz",
+        "m8z6-VXBT-bsSZ",
+        "FQq0-hSlO-hbeM",
+        "eyKg-sfap-3EzR",
+        "vIqv-mbG3-YExN",
+        "dNXk-MgYy-tjJG",
+        "7BqO-3oso-Wogs",
+        "Dqbx-uIrq-QeEy",
+        "N0h6-9BWy-Mw9l",
+        "2ScB-KdfX-zndh",
+        "9B3w-K2qA-q9TE",
+        "twX2-JucE-u4ht",
+        "cNYf-Mavl-SAHM",
+        "lIY5-RUEl-Abgk",
+        "2wlp-Agh1-A52m",
+        "1i9m-Zpal-CH7b",
+        "t6xa-LCwB-L6ql",
+        "v1rF-SO0i-gWSD",
+        "nJax-sJaJ-UzoT",
+        "VVrc-dp3k-6EQY",
+        "rcoo-s6iJ-fUco",
+        "1MJu-9vd3-2xHW",
+        "XOWZ-dBCR-DiJw",
+        "vJQv-9ifg-0bKJ",
+        "mXqA-csdO-gajD",
+        "OAdZ-2Wwm-4x4x",
+        "Kbrf-rBJz-u117",
+        "RFu4-ubj6-YCpo",
+        "5EEc-gjiY-0fxg",
+        "pZ6J-qedA-w6iG",
+        "SnUH-NgN5-s0FQ",
+        "nvzO-li9j-flNS",
+        "3Vje-pAF2-Ruao",
+        "TIFC-jk9T-rYrE",
+        "rZU0-DCsQ-7F8w",
+        "z7Ln-TcbQ-5yhJ",
+        "nqf2-FZkR-adeQ",
+        "TJYc-Aejw-CYmh",
+        "Mafk-l97s-2hLd",
+        "1Xda-uHF0-rF8O"
+    ];
 
     try {
-        // Создаем админ-ключ в базе (помечаем его как admin)
-        await kv.set(\`auth:\${ADMIN_KEY}\`, "admin");
+        // Создаем админ-ключ в базе (помечаем его как "admin")
+        await kv.set(`auth:${ADMIN_KEY}`, "admin");
 
-        // Создаем 250 пользовательских ключей (свободных)
+        // Создаем пользовательские ключи (со свободным значением "")
         for (let k of userKeys) {
-            await kv.set(\`auth:\${k}\`, "");
+            await kv.set(`auth:${k}`, "");
         }
         
-        res.status(200).send(\`Успешно загружено \${userKeys.length} пользовательских ключей и 1 ключ администратора.\`);
+        res.status(200).send(`Успешно загружено ${userKeys.length} пользовательских ключей и 1 ключ администратора.`);
     } catch (error) {
+        console.error(error);
         res.status(500).send("Ошибка при загрузке ключей.");
     }
-}`;
-
-    // Выводим результат в консоль, чтобы его было удобно скопировать
-    console.log("=== СКОПИРУЙТЕ ВЕСЬ ТЕКСТ НИЖЕ В ФАЙЛ api/init.js ===");
-    console.log(code);
-    console.log("=== КОНЕЦ ФАЙЛА ===");
-    console.log(`\nВАШ НОВЫЙ КЛЮЧ АДМИНИСТРАТОРА: ${adminKey}`);
-    console.log("Сохраните его, он понадобится для запуска скрипта инициализации и входа в систему!");
 }
-
-generateKeys();

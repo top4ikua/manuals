@@ -8,33 +8,38 @@ export default async function handler(req, res) {
     const { key, deviceToken } = req.body;
     const ADMIN_KEY = "semenmanual67521488";
 
-    // 1. Проверка ключа администратора
+    // 1. Админ-ключ работает всегда и везде
     if (key === ADMIN_KEY) {
         return res.status(200).json({ success: true });
     }
 
     try {
-        // 2. Ищем обычный ключ в базе данных
+        // 2. Ищем ключ в базе данных
         const claimedBy = await kv.get(`auth:${key}`);
 
+        // Ключа нет в базе
         if (claimedBy === null) {
-            return res.status(401).json({ error: "Ключ не существует" });
+            return res.status(401).json({ error: "Неверный ключ доступа" });
         }
 
-        // 3. Если значение пустое (""), ключ свободен
+        // 3. Ключ никем не занят (пустое значение)
         if (claimedBy === "") {
-            const newToken = crypto.randomUUID(); // Генерируем токен устройства
-            await kv.set(`auth:${key}`, newToken); // Записываем токен за этим ключом
+            // Генерируем уникальный токен для этого устройства
+            const newToken = crypto.randomUUID(); 
+            // Навсегда записываем этот токен в базу за данным ключом
+            await kv.set(`auth:${key}`, newToken); 
+            
             return res.status(200).json({ success: true, token: newToken });
         }
 
-        // 4. Если ключ уже занят, сверяем токен устройства
+        // 4. Ключ уже был использован. Проверяем, совпадает ли токен устройства.
         if (claimedBy === deviceToken) {
-            return res.status(200).json({ success: true });
+            return res.status(200).json({ success: true }); // Это владелец ключа
         } else {
-            return res.status(403).json({ error: "Этот ключ уже активирован на другом устройстве" });
+            // Это чужое устройство
+            return res.status(403).json({ error: "Этот ключ уже активирован на другом устройстве." });
         }
     } catch (error) {
-        return res.status(500).json({ error: "Внутренняя ошибка сервера" });
+        return res.status(500).json({ error: "Ошибка сервера при проверке ключа" });
     }
 }

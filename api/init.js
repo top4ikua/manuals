@@ -261,7 +261,7 @@ export default async function handler(req, res) {
         "TJYc-Aejw-CYmh",
         "Mafk-l97s-2hLd",
         "1Xda-uHF0-rF8O",
-        "admin"
+        "admi-nnnn-nnnn"
     ];
 
     try {
